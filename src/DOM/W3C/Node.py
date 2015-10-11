@@ -13,6 +13,7 @@ from NodeList import NodeList
 
 log = logging.getLogger("Thug")
 
+from DOM import dom_logging
 
 class Node(PyV8.JSClass, EventTarget):
     # NodeType
@@ -181,7 +182,7 @@ class Node(PyV8.JSClass, EventTarget):
                                  Node.COMMENT_NODE, )
     
     def insertBefore(self, newChild, refChild):
-        log.warning('insertBefore {}'.format(newChild))
+        dom_logging(log, 'insertBefore', str(newChild.tag))
         if not newChild:
             raise DOMException(DOMException.HIERARCHY_REQUEST_ERR)
         
@@ -239,7 +240,7 @@ class Node(PyV8.JSClass, EventTarget):
         return newChild
 
     def replaceChild(self, newChild, oldChild):
-        log.wargning("replaceChild {}".format(newChild))
+        dom_logging(log, "replaceChild", str(newChild.tag))
         # NO_MODIFICATION_ALLOWED_ERR: Raised if this node or the parent of 
         # the new node is readonly.
         if self.is_readonly(self):
@@ -310,7 +311,7 @@ class Node(PyV8.JSClass, EventTarget):
         return oldChild
 
     def appendChild(self, newChild):
-        log.warning("appendChild {}".format(newChild))
+        dom_logging(log, "appendChild", str(newChild.tag))
         # NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly
         if self.is_readonly(self):
             raise DOMException(DOMException.NO_MODIFICATION_ALLOWED)

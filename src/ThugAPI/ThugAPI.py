@@ -251,17 +251,18 @@ class ThugAPI:
 
     def run(self, window):
         with PyV8.JSLocker():
-            dft = DFT.DFT(window)
-            dft.run()
+            self.dft = DFT.DFT(window)
+            self.dft.run()
 
-    def window_from_file(self, data, url):
+    def window_from_file(self, data, url, offline_content=dict(), max_len=200):
         log.ThugLogging.set_url(url)
         log.ThugOpts.local = True
+        log.ThugOpts.max_len = max_len
 
         log.HTTPSession = HTTPSession.HTTPSession()
 
         doc    = w3c.parseString(data)
-        window = Window.Window('about:blank', doc, personality = log.ThugOpts.useragent)
+        window = Window.Window('about:blank', doc, personality = log.ThugOpts.useragent, offline_content=offline_content)
         window.open()
         return window
 

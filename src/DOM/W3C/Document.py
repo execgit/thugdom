@@ -32,6 +32,7 @@ from EntityReference import EntityReference
 from ProcessingInstruction import ProcessingInstruction
 from Events.DocumentEvent import DocumentEvent
 from Views.DocumentView import DocumentView
+from DOM import dom_logging
 
 class Document(Node, DocumentEvent, DocumentView):
     def __init__(self, doc):
@@ -235,7 +236,7 @@ class Document(Node, DocumentEvent, DocumentView):
 
     # Introduced in DOM Level 2
     def importNode(self, importedNode, deep):
-        log.warning('importNode {}'.format(importedNode))
+        dom_logging(log, 'importNode', str(importedNode))
         # TODO
         pass
 

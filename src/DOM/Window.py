@@ -57,6 +57,7 @@ from ActiveX.ActiveX import _ActiveXObject
 from AST.AST import AST
 from Debugger import Shellcode, Global
 from Java.java import java
+from DOM import dom_logging
 
 sched = sched.scheduler(time.time, time.sleep)
 log = logging.getLogger("Thug")
@@ -105,10 +106,11 @@ class Window(PyV8.JSClass):
         
     def __init__(self, url, dom_or_doc, navigator = None, personality = 'winxpie60', name="", 
                  target='_blank', parent = None, opener = None, replace = False, screen = None, 
-                 width = 800, height = 600, left = 0, top = 0, **kwds):
+                 width = 800, height = 600, left = 0, top = 0, offline_content = dict(), **kwds):
 
         self.url = url
         self.doc = w3c.getDOMImplementation(dom_or_doc, **kwds) if isinstance(dom_or_doc, BeautifulSoup.BeautifulSoup) else dom_or_doc
+        self.offline_content = offline_content
         
         self.doc.window        = self
         self.doc.contentWindow = self
@@ -146,6 +148,8 @@ class Window(PyV8.JSClass):
         self._methods      = tuple()
 
         log.MIMEHandler.window = self
+
+        self.log = log
 
     def __getattr__(self, name):
         if name in self._symbols:
@@ -254,7 +258,7 @@ class Window(PyV8.JSClass):
         return self._location
 
     def setLocation(self, location):
-        log.warning("Window.setLocation {}".format(location))
+        dom_logging(log, "Window.setLocation", location)
         self._location.href = location
 
     location = property(getLocation, setLocation)
@@ -779,7 +783,7 @@ class Window(PyV8.JSClass):
         pass
 
     def _navigate(self, location):
-        log.wargning("Window.navigate {}".format(location))
+        dom_logging(log, "Window.navigate {}".format(location))
         self.location = location
         return 0
 
@@ -891,11 +895,7 @@ class Window(PyV8.JSClass):
         return self._context
 
     def evalScript(self, script, tag = None):
-        if len(script) > 200:
-            _script = script.strip()[:197] + '...'
-        else:
-            _script = script
-        log.warning("eval script {}".format(repr(_script)))
+        dom_logging(log, 'eval script', script)
         result = 0
 
         try:

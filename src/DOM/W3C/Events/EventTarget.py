@@ -14,8 +14,12 @@ class EventTarget:
         if log.ThugOpts.Personality.isIE() and log.ThugOpts.Personality.browserMajorVersion < 9:
             self.detachEvent = self._detachEvent
 
-            def attachEvent(self, eventType, handler):
-                return self._attachEvent(eventType, handler)
+            def attachEvent(self, *args):
+                log.warning("[attachEvent EventTarget] %s" % (repr(args)))
+                try:
+                    return self._attachEvent(*args)
+                except:
+                    pass
 
             setattr(self.__class__, 'attachEvent', attachEvent)
         else:

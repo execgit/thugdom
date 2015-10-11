@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 import PyV8
+import logging
+
+from DOM import dom_logging
+
+log = logging.getLogger("Thug")
 
 class NamedNodeMap(PyV8.JSClass):
     def __init__(self, parent):
@@ -17,7 +22,7 @@ class NamedNodeMap(PyV8.JSClass):
 
         attr.parent = self.parent
 
-        log.warning("setNamedItem {}".format(attr.value))
+        dom_logging(log, "setNamedItem", attr.value)
         self.parent.tag[attr.name] = attr.value
 
         if oldattr:

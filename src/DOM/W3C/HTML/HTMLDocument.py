@@ -33,7 +33,7 @@ from .HTMLAllCollection import HTMLAllCollection
 from .HTMLDocumentCompatibleInfo import HTMLDocumentCompatibleInfo
 from .text_property import text_property
 from .xpath_property import xpath_property
-
+from DOM import dom_logging
 
 class HTMLDocument(Document):
     title       = xpath_property("/html/head/title/text()")
@@ -43,7 +43,7 @@ class HTMLDocument(Document):
     forms       = xpath_property("//form", readonly = True)
     links       = xpath_property("//a[@href]", readonly = True)
     anchors     = xpath_property("//a[@name]", readonly = True)
-    innerHTML   = text_property()
+    innerHTML   = text_property(tag='innerHTML')
 
     def __init__(self, doc, win = None, referer = None, lastModified = None, cookie = ''):
         Document.__init__(self, doc)
@@ -250,7 +250,7 @@ class HTMLDocument(Document):
         self.doc = BeautifulSoup.BeautifulSoup(html, "html5lib")
 
     def write(self, html):
-        log.warning("document.write {}".format(html))
+        dom_logging(log, "document.write", html)
         if self._html:
             self._html.write(html)
             return

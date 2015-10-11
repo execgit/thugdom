@@ -37,6 +37,7 @@ from .MimeTypes import MimeTypes
 from .Plugins import Plugins
 from .UserProfile import UserProfile
 from .HTTPSession import AboutBlank, FetchForbidden
+from . import dom_logging
 
 log = logging.getLogger("Thug")
 
@@ -291,40 +292,44 @@ class Navigator(PyV8.JSClass):
         return True
 
     def fetch(self, url, method = "GET", headers = {}, body = None, redirect_type = None, params = None):
-        # The command-line option -x (--local-nofetch) prevents remote
-        # content fetching so raise an exception and exit the method.
-        if log.HTTPSession.no_fetch:
-            raise FetchForbidden
-
-        # Do not attempt to fetch content if the URL is "about:blank".
-        if log.HTTPSession.about_blank(url):
-            raise AboutBlank
-
-        # URL normalization and fixing (if broken and the option is
-        # enabled).
-        url = log.HTTPSession.normalize_url(self._window, url)
-        if url is None:
-            return
-
-        if redirect_type:
-            log.ThugLogging.add_behavior_warn(("[%s redirection] %s -> %s" % (redirect_type, self._window.url, url, )))
-            log.ThugLogging.log_connection(self._window.url, url, redirect_type)
+        if url in self._window.offline_content:
+            log.debug("Using offline content for url {}".format(url))
+            response = self._window.offline_content[url]
         else:
-            log.ThugLogging.log_connection(self._window.url, url, "unknown")
+            # The command-line option -x (--local-nofetch) prevents remote
+            # content fetching so raise an exception and exit the method.
+            if log.HTTPSession.no_fetch:
+                raise FetchForbidden
 
-        # The command-line option -t (--threshold) defines the maximum
-        # number of pages to fetch. If the threshold is reached avoid
-        # fetching the contents.
-        if log.HTTPSession.threshold_expired(url):
-            return
+            # Do not attempt to fetch content if the URL is "about:blank".
+            if log.HTTPSession.about_blank(url):
+                raise AboutBlank
 
-        # The command-line option -T (--timeout) set the analysis timeout
-        # (in seconds). If the analysis lasts more than this value avoid
-        # fetching the contents.
-        if log.HTTPSession.timeout_expired(url):
-            return
+            # URL normalization and fixing (if broken and the option is
+            # enabled).
+            url = log.HTTPSession.normalize_url(self._window, url)
+            if url is None:
+                return
 
-        response = log.HTTPSession.fetch(url, method, self._window, self.userAgent, headers, body)
+            if redirect_type:
+                log.ThugLogging.add_behavior_warn(("[%s redirection] %s -> %s" % (redirect_type, self._window.url, url, )))
+                log.ThugLogging.log_connection(self._window.url, url, redirect_type)
+            else:
+                log.ThugLogging.log_connection(self._window.url, url, "unknown")
+
+            # The command-line option -t (--threshold) defines the maximum
+            # number of pages to fetch. If the threshold is reached avoid
+            # fetching the contents.
+            if log.HTTPSession.threshold_expired(url):
+                return
+
+            # The command-line option -T (--timeout) set the analysis timeout
+            # (in seconds). If the analysis lasts more than this value avoid
+            # fetching the contents.
+            if log.HTTPSession.timeout_expired(url):
+                return
+
+            response = log.HTTPSession.fetch(url, method, self._window, self.userAgent, headers, body)
 
         _url = log.ThugLogging.log_redirect(response)
         if _url:
@@ -377,7 +382,7 @@ class Navigator(PyV8.JSClass):
         if response.history:
             location = response.headers.get('location', None)
             if location and redirect_type not in ("URL found", "JNLP", "iframe", ):
-                log.wargning("Navigator location header {}".format(location))
+                dom_logging(log, "Navigator location header", location)
                 self._window.url = location
 
         if redirect_type in ("meta", ):
