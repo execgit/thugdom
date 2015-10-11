@@ -17,12 +17,9 @@
 # MA  02111-1307  USA
 
 
-import zope.interface
 from .IPlugin import IPlugin
 
 class Handler:
-    zope.interface.implements(IPlugin)
-
     def run(self, thug, log):
         log.debug(thug)
         log.debug(log)

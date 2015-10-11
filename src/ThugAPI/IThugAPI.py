@@ -16,9 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA  02111-1307  USA
 
-import zope.interface
-
-class IThugAPI(zope.interface.Interface):
+class IThugAPI(object):
     def version():
         """
         Print Thug version and exit

@@ -24,10 +24,12 @@ import logging
 from ThugAPI import *
 from Plugins.ThugPlugins import *
 
-log = logging.getLogger("Thug")
-log.setLevel(logging.WARN)
 
-configuration_path = "/etc/thug"
+log = logging.getLogger("Thug")
+logging.basicConfig(stream=sys.stdout, level=logging.WARN)
+
+venv = os.environ.get('VIRTUAL_ENV', '/')
+configuration_path = os.path.join(venv, "etc/local/thug/")
 
 class Thug(ThugAPI):
     def __init__(self, args):

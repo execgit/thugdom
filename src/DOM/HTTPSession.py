@@ -18,7 +18,10 @@
 
 import datetime
 import requests
-import requesocks
+try:
+    import requesocks
+except ImportError:
+    requesocks = None
 import urllib
 import ssl
 
@@ -60,8 +63,10 @@ class HTTPSession(object):
         if proxy is None or not self.__is_socks_proxy(proxy):
             self.session = requests.Session()
             return
-
-        self.session = requesocks.Session()
+        if requesocks:
+            self.session = requesocks.Session()
+        else:
+            log.ThugLogging.log_warning("Socks proxyg not supported (requesocks not found)")
 
     def __init_proxy(self, proxy):
         if proxy is None:

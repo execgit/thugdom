@@ -17,7 +17,13 @@
 # MA  02111-1307  USA
 
 import os
-import pylibemu
+try:
+    import pylibemu
+except ImportError:
+    try:
+        import libemu as pylibemu
+    except ImportError:
+        pylibemu = None
 import struct
 import hashlib
 import string
@@ -26,8 +32,10 @@ import logging
 import PyV8
 import traceback
 import bs4 as BeautifulSoup
-import jsbeautifier
-from cssutils.parse import CSSParser
+try:
+    import jsbeautifier
+except ImportError:
+    jsbeautifier = None
 
 try:
     import urllib.parse as urlparse
@@ -232,6 +240,9 @@ class DFT(object):
             sc = self.build_shellcode(shellcode)
         except:
             sc = shellcode
+
+        if not pylibemu:
+            return
 
         emu = pylibemu.Emulator(enable_hooks = False)
         emu.run(sc)
@@ -712,6 +723,7 @@ class DFT(object):
             return False
 
         s.text = js.decode(enc['encoding'])
+ 
         return True
 
     def handle_external_javascript(self, script):
@@ -1008,33 +1020,8 @@ class DFT(object):
     def handle_body(self, body):
         pass
 
-    def do_handle_font_face_rule(self, rule):
-        for p in rule.style:
-            if p.name.lower() not in ('src', ):
-                continue
-
-            url = p.value
-            if url.startswith('url(') and len(url) > 4:
-                url = url.split('url(')[1].split(')')[0]
-
-            try:
-                self.window._navigator.fetch(url, redirect_type = "font face")
-            except:
-                return
-
     def handle_style(self, style):
         log.info(style)
-
-        cssparser = CSSParser(loglevel = logging.CRITICAL, validate = False)
-
-        try:
-            sheet = cssparser.parseString(style.text)
-        except:
-            return
-
-        for rule in sheet:
-            if rule.type == rule.FONT_FACE_RULE:
-                self.do_handle_font_face_rule(rule)
 
     def _handle_data_uri(self, href):
         """

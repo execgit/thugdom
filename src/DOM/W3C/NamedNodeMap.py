@@ -17,6 +17,7 @@ class NamedNodeMap(PyV8.JSClass):
 
         attr.parent = self.parent
 
+        log.warning("setNamedItem {}".format(attr.value))
         self.parent.tag[attr.name] = attr.value
 
         if oldattr:

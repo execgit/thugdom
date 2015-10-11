@@ -26,7 +26,12 @@
 import os
 import json
 import fnmatch
-import pydot
+
+PYDOT = True
+try:
+    import pydot
+except ImportError:
+    PYDOT = False
 
 try:
     import urllib.parse as urlparse
@@ -112,7 +117,8 @@ class Mapper():
         """
             Write the dot header
         """
-        self.graph = pydot.Dot(graph_type = 'digraph', rankdir = 'LR')
+        if PYDOT:
+            self.graph = pydot.Dot(graph_type = 'digraph', rankdir = 'LR')
 
     def _check_content_type(self, loc, t):
         return loc["content-type"] and loc["content-type"].lower().startswith(t)
@@ -167,6 +173,8 @@ class Mapper():
         return p
 
     def _dot_from_data(self):
+        if not PYDOT:
+            return
         # Create dot from data
         if "locations" in self.data:
             for loc in self.data["locations"]:

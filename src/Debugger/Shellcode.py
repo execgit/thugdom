@@ -23,14 +23,23 @@ import struct
 import hashlib
 import logging
 import traceback
-import pylibemu
+try:
+    import pylibemu
+except ImportError:
+    try:
+        import libemu as pylibemu
+    except ImportError:
+        pylibemu = None
+
 from .Debugger import Debugger
 from DOM.W3C.Node import Node
 
 log = logging.getLogger("Thug")
 
 class Shellcode(object):
-    emu = pylibemu.Emulator(enable_hooks = False)
+    emu = None
+    if pylibemu:
+        emu = pylibemu.Emulator(enable_hooks = False)
 
     def __init__(self, window, ctxt, ast, script):
         self.window  = window
@@ -113,6 +122,14 @@ class Shellcode(object):
                 if trace:
                     log.ThugLogging.log_warning(trace)
                     return None
+
+            if trace:
+                log.warning("js trace result {}".format(trace))
+            if result and result is not True:
+                log.warning("eval result {}".format(result))
+
+            if not self.emu:
+                return result
 
             for name in self.ast.names:
                 s = None

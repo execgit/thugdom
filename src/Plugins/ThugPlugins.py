@@ -25,8 +25,6 @@ except ImportError:
     import ConfigParser
 
 import logging
-from zope.interface.verify import verifyObject
-from zope.interface.exceptions import BrokenImplementation
 from .IPlugin import IPlugin
 
 log = logging.getLogger("Thug")
@@ -83,8 +81,4 @@ class ThugPlugins:
             handler = getattr(module, "Handler", None)
             if handler:
                 p = handler()
-                try:
-                    verifyObject(IPlugin, p)
-                    p.run(self.thug, log)
-                except BrokenImplementation as e:
-                    log.warning("[%s] %s" % (source, e, ))
+                p.run(self.thug, log)

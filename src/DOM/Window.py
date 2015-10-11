@@ -23,14 +23,20 @@ import logging
 import PyV8
 import traceback
 import hashlib
-import pefile
+try:
+    import pefile
+except ImportError:
+    pefile = None
 import numbers
 import datetime
 import collections
 import urllib
 #import new
 import bs4 as BeautifulSoup
-import jsbeautifier
+try:
+    import jsbeautifier
+except ImportError:
+    jsbeautifier = None
 from .W3C import *
 from .W3C.HTML.HTMLCollection import HTMLCollection
 from .Navigator import Navigator
@@ -248,6 +254,7 @@ class Window(PyV8.JSClass):
         return self._location
 
     def setLocation(self, location):
+        log.warning("Window.setLocation {}".format(location))
         self._location.href = location
 
     location = property(getLocation, setLocation)
@@ -739,9 +746,9 @@ class Window(PyV8.JSClass):
             md5.update(response.content)
             log.warning("[Windows Script Host Run - Stage %d] Saving file %s" % (stage, md5.hexdigest()))
             p = '"'.join(s[1:])
-            
+
             self._doRun(response.content, stage + 1)
-                
+
     def _attachEvent(self, sEvent, fpNotify):
         log.debug("[attachEvent] %s %s" % (sEvent, fpNotify, ))
         setattr(self, sEvent.lower(), fpNotify)
@@ -772,6 +779,7 @@ class Window(PyV8.JSClass):
         pass
 
     def _navigate(self, location):
+        log.wargning("Window.navigate {}".format(location))
         self.location = location
         return 0
 
@@ -883,6 +891,11 @@ class Window(PyV8.JSClass):
         return self._context
 
     def evalScript(self, script, tag = None):
+        if len(script) > 200:
+            _script = script.strip()[:197] + '...'
+        else:
+            _script = script
+        log.warning("eval script {}".format(repr(_script)))
         result = 0
 
         try:

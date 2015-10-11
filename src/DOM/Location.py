@@ -62,6 +62,7 @@ class Location(PyV8.JSClass):
             if log.ThugOpts.Personality[p]['userAgent'] == self._window._navigator.userAgent:
                 break
 
+        log.wargning("Location.set_href {}".format(url))
         url = log.HTTPSession.normalize_url(self._window, url)
         log.ThugLogging.log_href_redirect(referer, url)
 
@@ -107,6 +108,7 @@ class Location(PyV8.JSClass):
 
     def assign(self, url):
         """Loads a new HTML document."""
+        log.wargning("Location.assign {}".format(url))
         self._window.open(url)
 
     def reload(self, force = False):
@@ -115,4 +117,5 @@ class Location(PyV8.JSClass):
 
     def replace(self, url):
         """Replaces the current document by loading another document at the specified URL."""
+        log.wargning("Location.replace {}".format(url))
         self.href = url

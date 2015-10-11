@@ -25,7 +25,10 @@ log = logging.getLogger("Thug")
 import base64
 import hashlib
 import zipfile
-import rarfile
+try:
+    import rarfile
+except ImportError:
+    rarfile = None
 import tempfile
 
 try:

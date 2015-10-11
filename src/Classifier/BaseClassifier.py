@@ -17,7 +17,11 @@
 # MA  02111-1307  USA
 
 import os
-import yara
+YARA = True
+try:
+    import yara
+except ImportError:
+    YARA = False
 import logging
 from .abstractmethod import abstractmethod
 
@@ -31,6 +35,8 @@ class BaseClassifier:
         self.init_rules()
 
     def init_rules(self):
+        if not YARA:
+            return
         p = getattr(self, 'default_rule_file', None)
         if p is None:
             log.warn("[%s] Skipping not existing default classification rule file" % (self.classifier, ))
@@ -52,6 +58,8 @@ class BaseClassifier:
         self.rules = yara.compile(filepaths = self._rules)
 
     def add_rule(self, rule_file):
+        if not YARA:
+            return
         if not os.path.exists(rule_file):
             log.warn("[%s] Skipping not existing classification rule file %s" % (self.classifier, rule_file, ))
             return

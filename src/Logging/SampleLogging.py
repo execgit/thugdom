@@ -22,7 +22,12 @@ import base64
 import tempfile
 import hashlib
 import zipfile
-import pefile
+
+PEFILE = True
+try:
+    import pefile
+except ImportError:
+    PEFILE = False
 
 try:
     from io import StringIO

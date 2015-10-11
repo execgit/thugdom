@@ -16,9 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 # MA  02111-1307  USA
 
-import zope.interface
-
-class IPlugin(zope.interface.Interface):
+class IPlugin():
     def run(thug, log):
         """
         This method is called when the plugin is invoked

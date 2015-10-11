@@ -21,8 +21,6 @@ import os
 import logging
 import PyV8
 
-from zope.interface import implements
-
 try:
     import urllib.parse as urlparse
 except ImportError:
@@ -54,7 +52,6 @@ __thug_version__ = '0.6.5'
 
 
 class ThugAPI:
-    implements(IThugAPI)
 
     def __init__(self, args, configuration_path = None):
         self.args               = args
@@ -257,13 +254,24 @@ class ThugAPI:
             dft = DFT.DFT(window)
             dft.run()
 
+    def window_from_file(self, data, url):
+        log.ThugLogging.set_url(url)
+        log.ThugOpts.local = True
+
+        log.HTTPSession = HTTPSession.HTTPSession()
+
+        doc    = w3c.parseString(data)
+        window = Window.Window('about:blank', doc, personality = log.ThugOpts.useragent)
+        window.open()
+        return window
+
     def run_local(self, url):
         log.ThugLogging.set_url(url)
         log.ThugOpts.local = True
 
         log.HTTPSession = HTTPSession.HTTPSession()
 
-        html   = open(url, 'r').read()
+        html = open(url, 'r').read()
         doc    = w3c.parseString(html)
         window = Window.Window('about:blank', doc, personality = log.ThugOpts.useragent)
         window.open()

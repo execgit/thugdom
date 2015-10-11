@@ -185,6 +185,7 @@ class Element(Node, ElementCSSInlineStyle):
         return self.tag[name] if self.tag.has_attr(name) else ""
 
     def setAttribute(self, name, value):
+        log.warning("setAttribute {} {}".format(name, value))
         if not isinstance(name, basestring):
             name = str(name)
 
@@ -221,6 +222,7 @@ class Element(Node, ElementCSSInlineStyle):
         return Attr(self.doc, self, name) if self.tag.has_attr(name) else None
     
     def setAttributeNode(self, attr):
+        log.warning("setAttributeNode {} {}".format(attr.name, attr.value))
         self.tag[attr.name] = attr.value
     
     def removeAttributeNode(self, attr):

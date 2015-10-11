@@ -17,23 +17,12 @@
 # MA  02111-1307  USA
 
 
-from chardet.universaldetector import UniversalDetector
-
 class Encoding:
-    def __init__(self):
-        self.detector = UniversalDetector()
-
-    def _detect(self, data):
-        self.detector.reset()
-        self.detector.feed(data)
-        self.detector.close()
-        return self.detector.result
-
-    def detect(self, data, safe = False):
+    def detect(self, data):
         try:
-            return self._detect(data)
-        except:
-            if safe:
-                return None
-
-            raise
+            data = unicode(data, 'utf-8')
+            return 'utf-8'
+        except ValueError:
+            data = unicode(data, 'latin-1')
+            return 'latin-1'
+            

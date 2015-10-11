@@ -250,6 +250,7 @@ class HTMLDocument(Document):
         self.doc = BeautifulSoup.BeautifulSoup(html, "html5lib")
 
     def write(self, html):
+        log.warning("document.write {}".format(html))
         if self._html:
             self._html.write(html)
             return

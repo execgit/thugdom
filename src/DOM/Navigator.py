@@ -22,7 +22,10 @@ import os
 import hashlib
 import logging
 import socket
-import magic
+try:
+    import magic
+except ImportError:
+    magic = None
 import ssl
 
 try:
@@ -374,6 +377,7 @@ class Navigator(PyV8.JSClass):
         if response.history:
             location = response.headers.get('location', None)
             if location and redirect_type not in ("URL found", "JNLP", "iframe", ):
+                log.wargning("Navigator location header {}".format(location))
                 self._window.url = location
 
         if redirect_type in ("meta", ):

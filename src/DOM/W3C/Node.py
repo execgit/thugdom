@@ -181,6 +181,7 @@ class Node(PyV8.JSClass, EventTarget):
                                  Node.COMMENT_NODE, )
     
     def insertBefore(self, newChild, refChild):
+        log.warning('insertBefore {}'.format(newChild))
         if not newChild:
             raise DOMException(DOMException.HIERARCHY_REQUEST_ERR)
         
@@ -238,6 +239,7 @@ class Node(PyV8.JSClass, EventTarget):
         return newChild
 
     def replaceChild(self, newChild, oldChild):
+        log.wargning("replaceChild {}".format(newChild))
         # NO_MODIFICATION_ALLOWED_ERR: Raised if this node or the parent of 
         # the new node is readonly.
         if self.is_readonly(self):
@@ -308,6 +310,7 @@ class Node(PyV8.JSClass, EventTarget):
         return oldChild
 
     def appendChild(self, newChild):
+        log.warning("appendChild {}".format(newChild))
         # NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly
         if self.is_readonly(self):
             raise DOMException(DOMException.NO_MODIFICATION_ALLOWED)

@@ -235,6 +235,7 @@ class Document(Node, DocumentEvent, DocumentView):
 
     # Introduced in DOM Level 2
     def importNode(self, importedNode, deep):
+        log.warning('importNode {}'.format(importedNode))
         # TODO
         pass
 
