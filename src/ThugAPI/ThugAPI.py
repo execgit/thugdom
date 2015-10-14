@@ -251,8 +251,8 @@ class ThugAPI:
 
     def run(self, window):
         with PyV8.JSLocker():
-            self.dft = DFT.DFT(window)
-            self.dft.run()
+            dft = DFT.DFT(window)
+            dft.run()
 
     def window_from_file(self, data, url, offline_content=dict(), max_len=200):
         log.ThugLogging.set_url(url)

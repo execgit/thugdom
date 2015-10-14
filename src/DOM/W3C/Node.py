@@ -99,7 +99,9 @@ class Node(PyV8.JSClass, EventTarget):
     
     @abstractmethod
     def setNodeValue(self, value):
-        raise DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR)
+        dom_logging(log, 'setNodeValue', str(value))
+        pass
+#        raise DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR)
     
     nodeValue = property(getNodeValue, setNodeValue)
     
