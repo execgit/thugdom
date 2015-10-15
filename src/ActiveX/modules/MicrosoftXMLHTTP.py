@@ -21,6 +21,7 @@ def abort(self):
 
 
 def open(self, bstrMethod, bstrUrl, varAsync = True, varUser = None, varPassword = None):
+    DOM.dom_logging(log, "XMLHTTPRequest.open", bstrUrl)
     msg = "[Microsoft XMLHTTP ActiveX] open('%s', '%s', %s" % (bstrMethod, bstrUrl, varAsync is True, )
     if varUser:
         msg = "%s, '%s'" % (msg, varUser, )
@@ -48,6 +49,7 @@ def open(self, bstrMethod, bstrUrl, varAsync = True, varUser = None, varPassword
 
 
 def send(self, varBody = None):
+    DOM.dom_logging(log, "XMLHTTPRequest.send", varBody)
     msg = "send"
     if varBody:
         msg = "%s('%s')" % (msg, str(varBody), )
