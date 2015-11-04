@@ -680,6 +680,7 @@ class Window(PyV8.JSClass):
 
         ID is the interval ID.
         """
+        log.warning("Window.setTimeout {} {}ms".format(f, delay))
         if log.ThugOpts.delay:
             delay = min(delay, log.ThugOpts.delay)
 

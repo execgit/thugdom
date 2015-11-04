@@ -85,6 +85,7 @@ Synopsis:
         -C, --sampleclassifier  \tSpecify a list of additional (comma separated) sample classifier rule files
 
         Logging:
+        -L, --max-len           \tMax len of DOM modification logging (default: 200)
         -F, --file-logging      \tEnable file logging mode (default: disabled)
         -Z, --json-logging      \tEnable JSON logging mode (default: disabled)
         -M, --maec11-logging    \tEnable MAEC11 logging mode (default: disabled)
@@ -107,7 +108,7 @@ Synopsis:
 
         try:
             options, args = getopt.getopt(self.args,
-                                          'hVu:e:w:n:o:r:p:yszNlxvdqmagA:PS:RJ:Kt:ET:BQ:W:C:FZMGD:b:',
+                                          'hVu:e:w:n:o:r:p:yszNlxvdqmagA:PS:RJ:Kt:ET:BQ:W:C:FZMGD:b:L:',
                 ['help',
                 'version',
                 'useragent=',
@@ -148,6 +149,7 @@ Synopsis:
                 'elasticsearch-logging',
                 'mongodb-address=',
                 'vt-apikey=',
+                'max-len=',
                 ])
         except getopt.GetoptError:
             self.usage()
@@ -246,6 +248,8 @@ Synopsis:
                 self.set_log_output(option[1])
             elif option[0] in ('-q', '--quiet', ):
                 self.set_log_quiet()
+            elif option[0] in ('-L', '--max_len', ):
+                self.set_max_len(option[1])
 
         if p:
             ThugPlugins(PRE_ANALYSIS_PLUGINS, self)()

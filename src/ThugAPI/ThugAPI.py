@@ -237,6 +237,9 @@ class ThugAPI:
     def set_mongodb_address(self, mongodb_address):
         log.ThugOpts.mongodb_address = mongodb_address
 
+    def set_max_len(self, max_len):
+        log.ThugOpts.max_len = max_len
+
     def add_urlclassifier(self, rule):
         log.URLClassifier.add_rule(rule)
 
@@ -266,9 +269,11 @@ class ThugAPI:
         window.open()
         return window
 
-    def run_local(self, url):
+    def run_local(self, url, max_len=200):
         log.ThugLogging.set_url(url)
         log.ThugOpts.local = True
+        if not hasattr(log.ThugOpts, 'max_len'):
+            log.ThugOpts.max_len = max_len
 
         log.HTTPSession = HTTPSession.HTTPSession()
 
