@@ -719,10 +719,10 @@ class DFT(object):
         # Third (and last) attempt
         # The encoding is (hopefully) detected through the Encoding class.
         enc = log.Encoding.detect(js)
-        if enc['encoding'] is None:
+        if not enc:
             return False
 
-        s.text = js.decode(enc['encoding'])
+        s.text = js.decode(enc)
  
         return True
 

@@ -366,7 +366,9 @@ class MongoDB(object):
         """
         try:
             enc = log.Encoding.detect(data)
-            return data.decode(enc['encoding']).replace("\n", "").strip()
+            if enc:
+                data = data.decode(enc)
+            return data.replace("\n", "").strip()
         except:
             return thug_unicode(data).replace("\n", "").strip()
 

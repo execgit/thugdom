@@ -25,4 +25,5 @@ class Encoding:
         except ValueError:
             data = unicode(data, 'latin-1')
             return 'latin-1'
-            
+        except TypeError:
+            return ''
